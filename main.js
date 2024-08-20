@@ -25,70 +25,62 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-export async function ambilDaftarAbsensi() {
-  const refDokumen = collection(db, "absensi");
-  const kueri = query(refDokumen, orderBy("nama"));
+export async function ambilDaftarmapel() {
+  const refDokumen = collection(db, "jadwal-mapel");
+  const kueri = query(refDokumen, orderBy("mapel"));
   const cuplikanKueri = await getDocs(kueri);
 
   let hasil = [];
   cuplikanKueri.forEach((dok) => {
     hasil.push({
       id: dok.id,
-      tanggal: dok.data().tanggal,
-      nis: dok.data().nis,
-      nama: dok.data().nama,
-      alamat: dok.data().alamat,
-      noTlpn: dok.data().noTlpn,
+      hari: dok.data().hari,
+      waktu: dok.data().waktu,
       kelas: dok.data().kelas,
-      keterangan: dok.data().keterangan,
-
+      mapel: dok.data().mapel,
+      gurumapel:dok.data().gurumapel
     });
   });
 
 
-
-  return hasil;
+  return hasil
 }
 
-export function formatAngka(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
-
-export async function tambahAbsensi(tanggal, nis, nama, alamat, noTlpn, kelas, keterangan) {
+//export function formatAngka(x) {
+//return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g,".");
+  
+  export async function tambahjadwalmapel(hari, waktu, kelas, mapel, gurumapel) {
   try {
-    const dokRef = await addDoc(collection(db, 'absensi'), {
-      tanggal: tanggal,
-      nis: nis,
-      nama: nama,
-      alamat: alamat,
-      noTlpn: noTlpn,
+    const dokRef = await addDoc(collection(db, 'jadwal-mapel'), {
+      hari: hari,
+      waktu: waktu,
       kelas: kelas,
-      keterangan: keterangan
+      mapel: mapel,
+     gurumapel:gurumapel
     });
-    console.log('berhasil menembah ' + dokRef.id);
+    console.log('berhasil menembah jadwal ' + dokRef.id);
   } catch (e) {
-    console.log('gagal menambah ' + e);
+    console.log('gagal menambah jadwal' + e);
   }
 }
 
-export async function hapusAbsensi(docId) {
-  await deleteDoc(doc(db, "absensi", docId));
+//fungsi untuk hapus data
+export async function hapusmapel(docId) {
+  await deleteDoc(doc(db, "jadwal-mapel", docId));
 }
-
-export async function ubahAbsensi(docId, tanggal, nis, nama, alamat, noTlpn, kelas, keterangan) {
-  await updateDoc(doc(db, "absensi", docId), {
-    tanggal: tanggal,
-    nis: nis,
-    nama: nama,
-    alamat: alamat,
-    noTlpn: noTlpn,
+//fungsi untuk ubah data
+export async function ubahdaftarmapel(docId, hari, waktu, kelas, mapel, gurumapel) {
+  await updateDoc(doc(db, "jadwal-mapel", docId), {
+    hari: hari,
+    waktu: waktu,
     kelas: kelas,
-    keterangan: keterangan
+    mapel: mapel,
+    gurumapel: gurumapel
   });
 }
-
-export async function ambilAbsensi(docId) {
-  const docRef = await doc(db, "absensi", docId);
+//fungsi untuk ambil data dan untuk diubah
+export async function ambildaftarmapel(docId) {
+  const docRef = await doc(db, "jadwal-mapel", docId);
   const docSnap = await getDoc(docRef);
 
   return await docSnap.data();
